@@ -1,16 +1,21 @@
 package com.example.pertemuan11firebase.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.latihanfirebase.model.Mahasiswa
+import com.example.pertemuan11firebase.R
 import com.example.pertemuan11firebase.adapter.HomeAdapter
 import com.example.pertemuan11firebase.databinding.FragmentHomeBinding
-import com.google.firebase.database.*
-
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -47,5 +52,9 @@ class HomeFragment : Fragment() {
                 // Handle database error
             }
         })
+
+        binding.btnAdd.setOnClickListener{
+            findNavController().navigate(R.id.action_homeFragment_to_tambahFragment2)
+        }
     }
 }

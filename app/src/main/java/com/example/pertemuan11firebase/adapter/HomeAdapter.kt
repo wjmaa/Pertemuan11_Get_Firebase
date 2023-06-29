@@ -1,13 +1,20 @@
 package com.example.pertemuan11firebase.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.latihanfirebase.model.Mahasiswa
+import com.example.pertemuan11firebase.R
 import com.example.pertemuan11firebase.databinding.UserListBinding
+import com.google.firebase.database.FirebaseDatabase
 
-class HomeAdapter (private val dataMhs : ArrayList<Mahasiswa>) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
-    class ViewHolder (val binding : UserListBinding) : RecyclerView.ViewHolder(binding.root)
+class HomeAdapter(private val dataMhs: ArrayList<Mahasiswa>) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+    class ViewHolder(val binding: UserListBinding) : RecyclerView.ViewHolder(binding.root)
+
+    private val databaseRef = FirebaseDatabase.getInstance().getReference("mahasiswa")
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = UserListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -19,9 +26,33 @@ class HomeAdapter (private val dataMhs : ArrayList<Mahasiswa>) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.txtNama.text = dataMhs[position].nama
         holder.binding.txtNim.text = dataMhs[position].nim
+        holder.binding.txtNama.text = dataMhs[position].nama
         holder.binding.txtTelepon.text = dataMhs[position].telepon
+
+        holder.binding.cardView.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("id", dataMhs[position].id)
+            bundle.putString("nim", dataMhs[position].nim)
+            bundle.putString("nama", dataMhs[position].nama)
+            bundle.putString("telepon", dataMhs[position].telepon)
+            findNavController(it).navigate(R.id.action_homeFragment_to_detailFragment2, bundle)
+        }
+
+        holder.binding.btnDellete.setOnClickListener {
+            val mhsId = dataMhs[position].id
+            databaseRef.child(mhsId).removeValue()
+            Toast.makeText(it.context, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
+        }
+
+        holder.binding.btnEdit.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("id", dataMhs[position].id)
+            bundle.putString("nim", dataMhs[position].nim)
+            bundle.putString("nama", dataMhs[position].nama)
+            bundle.putString("telepon", dataMhs[position].telepon)
+            findNavController(it).navigate(R.id.action_homeFragment_to_updateFragment2, bundle)
+        }
     }
 
     fun setData(newData: ArrayList<Mahasiswa>) {
